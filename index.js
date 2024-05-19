@@ -13,6 +13,26 @@ scissors.addEventListener('click',()=>{
     startGame('scissors')
 })
 
+const reset = document.querySelector('.reset')
+reset.addEventListener('click',()=>{
+    scores.wins=0;
+    scores.losses=0;
+    scores.draws=0;
+    updateScoresDisplay();
+    
+})
+
+// to include the scores , the algorithm is :
+// 1.after getting the result , update the score
+// 2.display the score
+
+
+const scores = {
+    wins:0,
+    losses:0,
+    draws:0
+}
+
 
 
 function compChoice(){
@@ -75,14 +95,31 @@ if( userMove ==='scissors') {
 
 }
 
-const displayScore = document.querySelector('.displayScore')
-displayScore.innerHTML = `YOU PICKED ${userMove} & THE COMPUTER PICKED ${computerMove}.
-${result}
+if ( result === 'you win'){
+    scores.wins+=1;
+}else if ( result === 'you lose'){
+scores.losses+=1;
+}else if ( result === 'draw'){
+scores.draws+=1;
+}
+updateScoresDisplay(userMove,computerMove, result)
 
-`
- // The variables userMove and computerMove were being used outside their scope so this i fixed
-
-//  updated the display with the result within the scope of the function
 }
 
 
+// Function to update the score display
+function updateScoresDisplay(userMove = '', computerMove = '', result = '') {
+    const displayScore = document.querySelector('.displayScore');
+    displayScore.innerHTML = `
+        YOU PICKED ${userMove.toUpperCase()} & THE COMPUTER PICKED ${computerMove.toUpperCase()}.
+        ${result.toUpperCase()}<br>
+        ${scores.wins} Wins, ${scores.losses} Losses & ${scores.draws} Draws.
+    `;
+    
+}
+
+// The variables userMove and computerMove were being used outside their scope so this i fixed
+
+//  updated the display with the result within the scope of the function
+
+// but now as we created the updateScoresDisplay function, we can call it directly .
