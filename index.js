@@ -18,20 +18,23 @@ reset.addEventListener('click',()=>{
     scores.wins=0;
     scores.losses=0;
     scores.draws=0;
-    updateScoresDisplay();
+    localStorage.setItem('scores', JSON.stringify(scores)); // Update localStorage
+    updateScoresDisplay(); // Update the display
+  
     
+ 
 })
 
-// to include the scores , the algorithm is :
-// 1.after getting the result , update the score
-// 2.display the score
-
-
-const scores = {
+const scores = JSON.parse(localStorage.getItem('scores')) || {
     wins:0,
     losses:0,
     draws:0
 }
+
+
+
+updateScoresDisplay()
+
 
 
 
@@ -50,15 +53,13 @@ function compChoice(){
     }
 
     return computerMove
-    // computerMove was not returned, so i fixed it
-    // Returned the value
+  
 
 }
 
 function startGame(userMove) {
 const computerMove = compChoice();
-//  Undefined because compChoice doesn't return anything
-// now it is able to properly get the value
+
 
 let result = '';
 
@@ -98,28 +99,59 @@ if( userMove ==='scissors') {
 if ( result === 'you win'){
     scores.wins+=1;
 }else if ( result === 'you lose'){
-scores.losses+=1;
+    scores.losses+=1;
 }else if ( result === 'draw'){
-scores.draws+=1;
-}
-updateScoresDisplay(userMove,computerMove, result)
-
+    scores.draws+=1;
 }
 
+localStorage.setItem('scores', JSON.stringify(scores))
 
-// Function to update the score display
+updateScoresDisplay(userMove, computerMove, result);
+
+
+
+
+
+
+}
+
+
 function updateScoresDisplay(userMove = '', computerMove = '', result = '') {
     const displayScore = document.querySelector('.displayScore');
+    const userImage = getImage(userMove);
+    const computerImage = getImage(computerMove);
+    
+
+
+
     displayScore.innerHTML = `
-        YOU PICKED ${userMove.toUpperCase()} & THE COMPUTER PICKED ${computerMove.toUpperCase()}.
-        ${result.toUpperCase()}<br>
-        ${scores.wins} Wins, ${scores.losses} Losses & ${scores.draws} Draws.
+    Wins: ${scores.wins} Losses: ${scores.losses} Draws: ${scores.draws}<br>
+
+    You picked <img src="${userImage}" alt=""  width="50px" >  & the computer picked <img src="${computerImage}" alt="" width="50px"> 
+    <br>
+    <br>
+
+    ${result.toUpperCase()}
     `;
+
+    // systematic approach should be like all the three should have separate div's in html and all the information should be passed to the respective div so this will make things more easy to manage 
+
+    // as it is not that systematic i have to use br tag which is highly inappropriate 
+
+
     
 }
 
-// The variables userMove and computerMove were being used outside their scope so this i fixed
 
-//  updated the display with the result within the scope of the function
-
-// but now as we created the updateScoresDisplay function, we can call it directly .
+function getImage(move) {
+    switch (move) {
+        case 'rock':
+            return 'rock-emoji.png'; // Replace with actual path
+        case 'paper':
+            return 'paper-emoji.png'; // Replace with actual path
+        case 'scissors':
+            return 'scissors-emoji.png'; // Replace with actual path
+        // default:
+        //     return ''; // Return an empty string or a placeholder image path
+    }
+}
